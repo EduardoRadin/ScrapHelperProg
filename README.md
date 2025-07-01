@@ -1,4 +1,4 @@
-# Scrap Helper
+# ScrapHelperProg
 
 Sistema de gerenciamento para assistência técnica desenvolvido em Java com PostgreSQL.
 
@@ -65,10 +65,10 @@ O sistema possui as seguintes entidades principais:
 ### Executando o Projeto
 ```bash
 # Clone o repositório
-git clone https://github.com/seu-usuario/Scrap_Helper.git
+git clone https://github.com/EduardoRadin/ScrapHelperProg.git
 
 # Entre no diretório
-cd Scrap_Helper
+cd ScrapHelperProg
 
 # Compile o projeto
 mvn compile
@@ -144,7 +144,7 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 ## 👨‍💻 Autor
 
 **Eduardo Radin**
-- GitHub: [@seu-usuario](https://github.com/seu-usuario)
+- GitHub: [@EduardoRadin](https://github.com/EduardoRadin)
 
 ## 📞 Suporte
 
