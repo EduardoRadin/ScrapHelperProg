@@ -152,4 +152,4 @@ Se você encontrar algum problema ou tiver dúvidas, abra uma issue no GitHub.
 
 ---
 
-**Desenvolvido com ❤️ para facilitar o gerenciamento de assistência técnica.** 
+**Desenvolvido com ❤️ para facilitar o gerenciamento de assistência técnica.** # ScrapHelperProg
