@@ -1,17 +1,19 @@
 package model;
 
+import java.time.LocalDate; // Import LocalDate
+
 public class OrdemDeServico {
 	private int os_cod;
 	private int cod_eqp;
 	private int cod_fun;
-	private String os_data_entrada;
-	private String os_data_conclusao;
+	private LocalDate os_data_entrada; // Changed from String to LocalDate
+	private LocalDate os_data_conclusao; // Changed from String to LocalDate
 	private String os_eqp_status;
 	private String os_eqp_problema;
 	private float os_orcamento;
 	private String os_servico_realizado;
 	
-	public OrdemDeServico(int os_cod, int cod_eqp, int cod_fun, String os_data_entrada, String os_data_conclusao,
+	public OrdemDeServico(int os_cod, int cod_eqp, int cod_fun, LocalDate os_data_entrada, LocalDate os_data_conclusao, // Changed String to LocalDate
 			String os_eqp_status, String os_eqp_problema, float os_orcamento, String os_servico_realizado) {
 		this.os_cod = os_cod;
 		this.cod_eqp = cod_eqp;
@@ -65,19 +67,19 @@ public class OrdemDeServico {
 		this.cod_fun = cod_fun;
 	}
 
-	public String getOs_data_entrada() {
+	public LocalDate getOs_data_entrada() { // Changed return type to LocalDate
 		return os_data_entrada;
 	}
 
-	public void setOs_data_entrada(String os_data_entrada) {
+	public void setOs_data_entrada(LocalDate os_data_entrada) { // Changed parameter type to LocalDate
 		this.os_data_entrada = os_data_entrada;
 	}
 
-	public String getOs_data_conclusao() {
+	public LocalDate getOs_data_conclusao() { // Changed return type to LocalDate
 		return os_data_conclusao;
 	}
 
-	public void setOs_data_conclusao(String os_data_conclusao) {
+	public void setOs_data_conclusao(LocalDate os_data_conclusao) { // Changed parameter type to LocalDate
 		this.os_data_conclusao = os_data_conclusao;
 	}
 

@@ -5,6 +5,7 @@ import model.*;
 import db.Conexao;
 import java.util.Scanner;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException; // Import for date parsing
 
 public class Main {
     public static void main(String[] args) {
@@ -55,6 +56,8 @@ public class Main {
                 }
             } catch (Exception e) {
                 System.out.println("Erro: " + e.getMessage());
+                // Optionally print stack trace for detailed debugging:
+                // e.printStackTrace(); 
             }
         }
         scanner.close();
@@ -79,11 +82,9 @@ public class Main {
 
     private static void adicionarCEP(Scanner scanner) {
         try {
-            System.out.print("Código do CEP: ");
-            int cep_cod = Integer.parseInt(scanner.nextLine());
             System.out.print("Código do Município: ");
             int cod_mun = Integer.parseInt(scanner.nextLine());
-            CEP cep = new CEP(cep_cod, cod_mun);
+            CEP cep = new CEP(0, cod_mun); // CEP_COD será gerado automaticamente
             CEPDAO.getInstancia().inserir(cep);
             System.out.println("CEP inserido com sucesso!");
         } catch (Exception e) {
@@ -132,7 +133,7 @@ public class Main {
             System.out.print("Rua: ");
             String rua = scanner.nextLine();
             System.out.print("Número: ");
-            String numero = scanner.nextLine();
+            String numero = scanner.nextLine(); // Keep as String as per model
             System.out.print("Telefone: ");
             String telefone = scanner.nextLine();
             System.out.print("Celular: ");
@@ -148,7 +149,17 @@ public class Main {
     }
 
     private static void adicionarEstado(Scanner scanner) {
-        System.out.println("Implementar método inserir no EstadoDAO para salvar no banco.");
+        try {
+            System.out.print("Sigla do Estado: ");
+            String sigla = scanner.nextLine();
+            System.out.print("Nome do Estado: ");
+            String nome = scanner.nextLine();
+            Estado estado = new Estado(0, sigla, nome); // ESTADO_COD será gerado automaticamente
+            EstadoDAO.getInstancia().inserir(estado);
+            System.out.println("Estado inserido com sucesso!");
+        } catch (Exception e) {
+            System.out.println("Erro ao inserir Estado: " + e.getMessage());
+        }
     }
 
     private static void adicionarFuncionario(Scanner scanner) {
@@ -157,9 +168,9 @@ public class Main {
             int codCargo = Integer.parseInt(scanner.nextLine());
             System.out.print("Nome do Funcionário: ");
             String nome = scanner.nextLine();
-            System.out.print("CPF: ");
+            System.out.print("CPF (apenas números): ");
             String cpf = scanner.nextLine();
-            System.out.print("RG: ");
+            System.out.print("RG (apenas números): ");
             String rg = scanner.nextLine();
             System.out.print("Data de Nascimento (AAAA-MM-DD): ");
             LocalDate dataNas = LocalDate.parse(scanner.nextLine());
@@ -168,6 +179,10 @@ public class Main {
             Funcionario funcionario = new Funcionario(0, codCargo, nome, cpf, rg, dataNas, gen);
             FuncionarioDAO.getInstancia().inserirFuncionario(Conexao.getInstancia().getConexao(), funcionario);
             System.out.println("Funcionário inserido com sucesso!");
+        } catch (DateTimeParseException e) {
+            System.out.println("Erro de formato de data. Por favor, use o formato AAAA-MM-DD.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erro: " + e.getMessage());
         } catch (Exception e) {
             System.out.println("Erro ao inserir Funcionário: " + e.getMessage());
         }
@@ -189,12 +204,18 @@ public class Main {
 
     private static void adicionarPermissao(Scanner scanner) {
         try {
-            System.out.print("Descrição da Permissão: ");
+            System.out.print("Descrição da Permissão (A para Administrador, T para Técnico): ");
             String descricao = scanner.nextLine();
+            // Validate input for PER_DESCRICAO to be 'A' or 'T'
+            if (!descricao.equalsIgnoreCase("A") && !descricao.equalsIgnoreCase("T")) {
+                throw new IllegalArgumentException("Descrição da permissão inválida. Use 'A' ou 'T'.");
+            }
             Permissao permissao = new Permissao();
             permissao.setPer_descricao(descricao);
             PermissaoDAO.getInstancia().inserir(permissao);
             System.out.println("Permissão inserida com sucesso!");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erro: " + e.getMessage());
         } catch (Exception e) {
             System.out.println("Erro ao inserir Permissão: " + e.getMessage());
         }
@@ -204,17 +225,42 @@ public class Main {
         try {
             System.out.print("Nome da Pessoa: ");
             String nome = scanner.nextLine();
-            System.out.print("Tipo (F/J): ");
+            System.out.print("Tipo (F - Física ou J - Jurídica): ");
             String tipo = scanner.nextLine();
-            System.out.print("CPF/CNPJ: ");
+            if (!tipo.equalsIgnoreCase("F") && !tipo.equalsIgnoreCase("J")) {
+                throw new IllegalArgumentException("Tipo de pessoa inválido. Use 'F' ou 'J'.");
+            }
+            System.out.print("CPF/CNPJ (apenas números, até 14 dígitos): ");
             String cpfCnpj = scanner.nextLine();
-            System.out.print("Gênero: ");
+            System.out.print("Gênero (M/F - apenas para Pessoa Física): ");
             String gen = scanner.nextLine();
-            System.out.print("Data de Nascimento: ");
+            // Validate gender if type is 'F'
+            if (tipo.equalsIgnoreCase("F") && !gen.equalsIgnoreCase("M") && !gen.equalsIgnoreCase("F") && !gen.isEmpty()) {
+                throw new IllegalArgumentException("Gênero inválido. Use 'M' ou 'F'.");
+            } else if (tipo.equalsIgnoreCase("J") && !gen.isEmpty()) {
+                System.out.println("Atenção: Gênero não se aplica a Pessoa Jurídica e será ignorado.");
+                gen = null; // Or handle as per business logic, setting to null for database
+            }
+            
+            System.out.print("Data de Nascimento (AAAA-MM-DD - apenas para Pessoa Física): ");
             String dataNas = scanner.nextLine();
+            // Validate date if type is 'F'
+            if (tipo.equalsIgnoreCase("F") && !dataNas.isEmpty()) {
+                try {
+                    LocalDate.parse(dataNas); // Just to validate the format
+                } catch (DateTimeParseException e) {
+                    throw new IllegalArgumentException("Formato de data inválido. Use AAAA-MM-DD.");
+                }
+            } else if (tipo.equalsIgnoreCase("J") && !dataNas.isEmpty()) {
+                System.out.println("Atenção: Data de Nascimento não se aplica a Pessoa Jurídica e será ignorada.");
+                dataNas = null; // Or handle as per business logic, setting to null for database
+            }
+
             Pessoa pessoa = new Pessoa(0, nome, tipo, cpfCnpj, gen, dataNas);
             PessoaDAO.getInstancia().inserir(pessoa);
             System.out.println("Pessoa inserida com sucesso!");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erro: " + e.getMessage());
         } catch (Exception e) {
             System.out.println("Erro ao inserir Pessoa: " + e.getMessage());
         }
@@ -261,13 +307,15 @@ public class Main {
             String marca = scanner.nextLine();
             System.out.print("Modelo: ");
             String modelo = scanner.nextLine();
-            System.out.print("Número de Série: ");
-            float numSerie = Float.parseFloat(scanner.nextLine());
+            System.out.print("Número de Série (apenas números): ");
+            long numSerie = Long.parseLong(scanner.nextLine()); // Changed to long
             System.out.print("Estado de Entrada: ");
             String estadoEntrada = scanner.nextLine();
             Equipamento eqp = new Equipamento(0, codPessoa, tipo, marca, modelo, numSerie, estadoEntrada);
             EquipamentoDAO.getInstancia().inserir(eqp);
             System.out.println("Equipamento inserido com sucesso!");
+        } catch (NumberFormatException e) {
+            System.out.println("Erro de formato para o Número de Série. Por favor, insira apenas números inteiros.");
         } catch (Exception e) {
             System.out.println("Erro ao inserir Equipamento: " + e.getMessage());
         }
@@ -279,10 +327,10 @@ public class Main {
             int codEqp = Integer.parseInt(scanner.nextLine());
             System.out.print("Código do Funcionário: ");
             int codFun = Integer.parseInt(scanner.nextLine());
-            System.out.print("Data de Entrada: ");
-            String dataEntrada = scanner.nextLine();
-            System.out.print("Data de Conclusão: ");
-            String dataConclusao = scanner.nextLine();
+            System.out.print("Data de Entrada (AAAA-MM-DD): ");
+            LocalDate dataEntrada = LocalDate.parse(scanner.nextLine()); // Changed to LocalDate
+            System.out.print("Data de Conclusão (AAAA-MM-DD): ");
+            LocalDate dataConclusao = LocalDate.parse(scanner.nextLine()); // Changed to LocalDate
             System.out.print("Status do Equipamento: ");
             String status = scanner.nextLine();
             System.out.print("Problema do Equipamento: ");
@@ -294,6 +342,8 @@ public class Main {
             OrdemDeServico os = new OrdemDeServico(0, codEqp, codFun, dataEntrada, dataConclusao, status, problema, orcamento, servico);
             OrdemDeServicoDAO.getInstancia().inserir(os);
             System.out.println("Ordem de Serviço inserida com sucesso!");
+        } catch (DateTimeParseException e) {
+            System.out.println("Erro de formato de data. Por favor, use o formato AAAA-MM-DD.");
         } catch (Exception e) {
             System.out.println("Erro ao inserir Ordem de Serviço: " + e.getMessage());
         }

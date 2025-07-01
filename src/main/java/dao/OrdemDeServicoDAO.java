@@ -75,8 +75,8 @@ public class OrdemDeServicoDAO {
         o.setOs_cod(rs.getInt("OS_COD"));
         o.setCod_eqp(rs.getInt("COD_EQP"));
         o.setCod_fun(rs.getInt("COD_FUN"));
-        o.setOs_data_entrada(rs.getDate("OS_DATA_ENTRADA").toString());
-        o.setOs_data_conclusao(rs.getDate("OS_DATA_CONCLUSAO").toString());
+        o.setOs_data_entrada(rs.getDate("OS_DATA_ENTRADA").toLocalDate()); // Converted to LocalDate
+        o.setOs_data_conclusao(rs.getDate("OS_DATA_CONCLUSAO").toLocalDate()); // Converted to LocalDate
         o.setOs_eqp_status(rs.getString("OS_EQP_STATUS"));
         o.setOs_eqp_problema(rs.getString("OS_EQP_PROBLEMA"));
         o.setOs_orcamento(rs.getFloat("OS_ORCAMENTO"));

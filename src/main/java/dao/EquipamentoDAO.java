@@ -71,7 +71,7 @@ public class EquipamentoDAO {
         e.setEqp_tipo(rs.getString("EQP_TIPO"));
         e.setEqp_marca(rs.getString("EQP_MARCA"));
         e.setEqp_modelo(rs.getString("EQP_MODELO"));
-        e.setEqp_num_serie(rs.getFloat("EQP_NUM_SERIE"));
+        e.setEqp_num_serie(rs.getLong("EQP_NUM_SERIE"));
         e.setEqp_estado_entrada(rs.getString("EQP_ESTADO_ENTRADA"));
         return e;
     }

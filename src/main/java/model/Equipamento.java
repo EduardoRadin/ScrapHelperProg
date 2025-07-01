@@ -6,13 +6,13 @@ public class Equipamento {
 	private String eqp_tipo;
 	private String eqp_marca;
 	private String eqp_modelo;
-	private float eqp_num_serie;
+	private long eqp_num_serie; // Changed from float to long
 	private String eqp_estado_entrada;
 	
 	
 	
 	public Equipamento(int eqp_id, int cod_pessoa, String eqp_tipo, String eqp_marca, String eqp_modelo,
-			float eqp_num_serie, String eqp_estado_entrada) {
+			long eqp_num_serie, String eqp_estado_entrada) { // Changed float to long
 		this.eqp_id = eqp_id;
 		this.cod_pessoa = cod_pessoa;
 		this.eqp_tipo = eqp_tipo;
@@ -77,11 +77,11 @@ public class Equipamento {
 		this.eqp_modelo = eqp_modelo;
 	}
 
-	public float getEqp_num_serie() {
+	public long getEqp_num_serie() { // Changed from float to long
 		return eqp_num_serie;
 	}
 
-	public void setEqp_num_serie(float eqp_num_serie) {
+	public void setEqp_num_serie(long eqp_num_serie) { // Changed from float to long
 		this.eqp_num_serie = eqp_num_serie;
 	}
 

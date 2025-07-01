@@ -21,13 +21,12 @@ public class CEPDAO {
 		return instancia;
 	}
 	public void inserir(CEP cep) throws SQLException {
-        String sql = "INSERT INTO CEP (CEP_COD, COD_MUN) VALUES (?, ?)";
+        String sql = "INSERT INTO CEP (COD_MUN) VALUES (?)";
 
         try (Connection conn = Conexao.getInstancia().getConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, cep.getCep_cod());
-            stmt.setInt(2, cep.getCod_mun());
+            stmt.setInt(1, cep.getCod_mun());
 
             stmt.executeUpdate();
         }
